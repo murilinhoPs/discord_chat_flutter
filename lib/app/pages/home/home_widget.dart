@@ -43,11 +43,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.replay),
-          onPressed: () => AppModule.to.bloc<AppBloc>().requisition(),
-        ),
-        title: Text('title'),
+        // leading: IconButton(
+        //   icon: Icon(Icons.replay),
+        //   onPressed: () => AppModule.to.bloc<AppBloc>().requisition(),
+        // ),
+        title: Text('Discord-Api-Chat'),
+        centerTitle: true,
       ),
       body: StreamBuilder<List<MessageModel>>(
           stream: AppModule.to.bloc<AppBloc>().saida,
@@ -106,6 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: MediaQuery.of(context).size.width,
                             child: Card(
                               elevation: 0.0,
+                              
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment:
