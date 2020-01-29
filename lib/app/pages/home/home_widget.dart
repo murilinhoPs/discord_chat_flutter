@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import '../../app_module.dart';
 import '../../shared/global/post_bloc.dart';
 import '../../shared/models/message_model.dart';
-import '../../shared/services/dio_response.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -20,8 +19,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Controller formController;
 
   var blocPost = AppModule.to.bloc<PostBloc>();
-
-  final _service = DiscordService();
 
   final TextEditingController _controller = new TextEditingController();
 
