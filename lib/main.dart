@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import 'app/app_widget.dart';
+import 'app/app_module.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(AppModule());

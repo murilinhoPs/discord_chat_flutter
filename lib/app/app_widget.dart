@@ -1,7 +1,7 @@
 import 'package:discord_api_chat/app/pages/home/home_widget.dart';
 import 'package:flutter/material.dart';
 
-class MyApp extends StatelessWidget {
+class AppWidget extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
