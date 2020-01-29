@@ -10,16 +10,19 @@ class PostBloc extends BlocBase {
 
   String content;
 
-  MessageModel get messageValue => _controller$.value;
   Stream<int> get saida => _controller$.switchMap(streamPost);
   Sink<MessageModel> get entrada => _controller$.sink;
 
-  Stream<int> streamPost(MessageModel data) async* {
-    yield 0;
+  streamPost(MessageModel data) async {
+
     try {
       final response = await _service.responsePost(data.toJson());
-      yield response;
+      print(response);
+      print(data.toJson());
+      return response;
+      //yield response;
     } catch (e) {
+      print(e);
       _controller$.addError(e);
     }
   }

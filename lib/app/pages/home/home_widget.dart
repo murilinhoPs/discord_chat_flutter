@@ -6,33 +6,34 @@ import 'package:discord_api_chat/app/shared/global/post_bloc.dart';
 import 'package:discord_api_chat/app/shared/models/message_model.dart';
 import 'package:flutter/material.dart';
 
+import '../../app_module.dart';
+import '../../shared/global/post_bloc.dart';
+import '../../shared/models/message_model.dart';
+import '../../shared/services/dio_response.dart';
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var estado = {};
-
-  String _now;
-  Timer _everySecond;
-
-  Controller form_controller;
+  Controller formController;
 
   var blocPost = AppModule.to.bloc<PostBloc>();
+
+  final _service = DiscordService();
+
+  final TextEditingController _controller = new TextEditingController();
 
   @override
   void initState() {
     AppModule.to.bloc<AppBloc>().requisition();
-
-    _now = DateTime.now().second.toString();
-
+    formController = Controller();
     // defines a timer
-    _everySecond = Timer.periodic(Duration(seconds: 5), (Timer t) {
-      setState(() {
-        _now = DateTime.now().second.toString();
-        AppModule.to.bloc<AppBloc>().requisition();
-      });
+    Timer.periodic(Duration(seconds: 5), (Timer t) {
+      //setState(() {
+      AppModule.to.bloc<AppBloc>().requisition();
+      //});
     });
 
     super.initState();
@@ -56,10 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     fit: StackFit.passthrough,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.07),
                         child: ListView.builder(
                           reverse: true,
-                          shrinkWrap: false,
+                          shrinkWrap: true,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
                             MessageModel item = snapshot.data[index];
@@ -97,29 +99,65 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(0.0),
                         child: Align(
                           alignment: Alignment.bottomCenter,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Container(
-                                child: Card(
-                                  child: Form(
-                                    child: TextFormField(),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Card(
+                              elevation: 0.0,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    child: Form(
+                                      key: formController.formKey,
+                                      child: TextFormField(
+                                        controller: _controller,
+                                        style: TextStyle(
+                                            decoration: TextDecoration.none),
+                                        decoration: InputDecoration(
+                                          hintText: 'Escreva alguma coisa',
+                                        ),
+                                        validator: (value) => value.isEmpty
+                                            ? 'Deve escrever algo...'
+                                            : null,
+                                        onSaved: (value) =>
+                                            blocPost.content = value,
+                                      ),
+                                    ),
+                                    height: 50,
                                   ),
-                                  elevation: 5.0,
-                                ),
-                                height: 50,
-                                width: MediaQuery.of(context).size.width * 0.7,
+                                  IconButton(
+                                    icon: Icon(Icons.send),
+                                    onPressed: () {
+                                      if (formController.validade()) {
+                                        AppModule.to
+                                            .bloc<PostBloc>()
+                                            .streamPost(
+                                              MessageModel(
+                                                  content: blocPost.content),
+                                            );
+                                        _controller.clear();
+                                        blocPost.content = null;
+
+                                        Timer.periodic(Duration(seconds: 0),
+                                            (Timer t) {
+                                            AppModule.to
+                                                .bloc<AppBloc>()
+                                                .requisition();
+                                        });
+                                      }
+                                    },
+                                    color: Colors.purple,
+                                  )
+                                ],
                               ),
-                              FloatingActionButton(
-                                child: Icon(Icons.send),
-                                onPressed: () {},
-                                backgroundColor: Colors.purple,
-                              )
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -132,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Controller {
-  final formKey = GlobalKey<FormState>();
+  var formKey = GlobalKey<FormState>();
 
   bool validade() {
     var formState = formKey.currentState;
