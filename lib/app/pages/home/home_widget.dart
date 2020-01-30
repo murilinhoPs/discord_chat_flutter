@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:discord_api_chat/app/app_module.dart';
 import 'package:discord_api_chat/app/shared/global/get_bloc.dart';
 import 'package:discord_api_chat/app/shared/global/post_bloc.dart';
-import 'package:discord_api_chat/app/shared/models/attachments_model.dart';
 import 'package:discord_api_chat/app/shared/models/embeds_model.dart';
 import 'package:discord_api_chat/app/shared/models/message_model.dart';
 import 'package:discord_api_chat/app/shared/models/thumbnail_model.dart';
