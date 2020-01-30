@@ -10,7 +10,7 @@ class DiscordService {
 
     try {
       Response response = await dio.get(
-          'https://discordapp.com/api/channels/619306507242307584/messages?limit=20',
+          'https://discordapp.com/api/channels/432580928234324010/messages?limit=20',
           options: Options(
             headers: {
               'accept': 'application/json',
@@ -37,7 +37,7 @@ class DiscordService {
   Future<int> responsePost(Map<String, dynamic> formData) async {
     try {
       Response response = await dio.post(
-          'https://discordapp.com/api/channels/619306507242307584/messages',
+          'https://discordapp.com/api/channels/432580928234324010/messages',
           options: Options(
             headers: {
               'accept': 'application/json',

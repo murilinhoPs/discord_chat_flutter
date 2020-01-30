@@ -151,13 +151,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   blocPost.entrada.add(
                                                     MessageModel(
                                                       content: blocPost.content,
-                                                      embed: Embeds(
-                                                        title: 'Embed message',
-                                                        description: 'hdhdhdhd',
-                                                        image: Thumbnail(
-                                                            url:
-                                                                'https://i.pinimg.com/originals/ce/2b/27/ce2b274fa68d234865a6abf69644f472.png'),
-                                                      ),
+                                                      // embed: Embeds(
+                                                      //   title: 'Embed message',
+                                                      //   description: 'hdhdhdhd',
+                                                      //   image: Thumbnail(
+                                                      //       url:
+                                                      //           'https://i.pinimg.com/originals/ce/2b/27/ce2b274fa68d234865a6abf69644f472.png'),
+                                                      // ),
                                                     ),
                                                   );
 
@@ -178,11 +178,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                               blocPost.entrada.add(
                                                 MessageModel(
                                                   content: blocPost.content,
-                                                  embed: Embeds(
-                                                    image: Thumbnail(
-                                                        url:
-                                                            'https://i.pinimg.com/originals/ce/2b/27/ce2b274fa68d234865a6abf69644f472.png'),
-                                                  ),
+                                                  // embed: Embeds(
+                                                  //   image: Thumbnail(
+                                                  //       url:
+                                                  //           'https://i.pinimg.com/originals/ce/2b/27/ce2b274fa68d234865a6abf69644f472.png'),
+                                                  // ),
                                                 ),
                                               );
 
