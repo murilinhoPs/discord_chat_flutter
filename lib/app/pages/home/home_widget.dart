@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:discord_api_chat/app/app_module.dart';
 import 'package:discord_api_chat/app/shared/global/get_bloc.dart';
 import 'package:discord_api_chat/app/shared/global/post_bloc.dart';
+import 'package:discord_api_chat/app/shared/models/attachments_model.dart';
+import 'package:discord_api_chat/app/shared/models/embeds_model.dart';
 import 'package:discord_api_chat/app/shared/models/message_model.dart';
+import 'package:discord_api_chat/app/shared/models/thumbnail_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_module.dart';
@@ -56,17 +59,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).size.height * 0.07),
+                            bottom: MediaQuery.of(context).size.height * 0.085),
                         child: ListView.builder(
                           reverse: true,
                           shrinkWrap: true,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
                             MessageModel item = snapshot.data[index];
+
                             return Column(
                               children: <Widget>[
                                 ListTile(
-                                  selected: true,
                                   leading: Hero(
                                     child: CircleAvatar(
                                       backgroundImage: NetworkImage(
@@ -79,92 +82,135 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: Colors.deepPurple[800],
                                           fontSize: 16)),
                                   subtitle: Text(
+                                    //        (item.content.contains('<@!>')) ?
+                                    // item.content.replaceAll('<@! >', item.mentions[0].username):
                                     item.content,
+
                                     style: TextStyle(
                                         fontSize: 17, color: Colors.grey[800]),
                                   ),
+                                  
                                 ),
-                                item.attachments.length > 0
-                                    ? Image.network(item.attachments[0].url)
+                                  item.attachments.length > 0 //|| 
+                                    ? Image.network(item.attachments[0].url) 
+                                    : item.embeds.length > 0 ?
+                                    Image.network(item.embeds[0].image.url) 
                                     : Container(
                                         height: 0,
                                         width: 0,
-                                      ),
+                                      )
                                 //snapshot.data.contains('attachments') ?
                               ],
                             );
                           },
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Card(
-                              elevation: 0.0,
-                              
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    child: Form(
-                                      key: formController.formKey,
-                                      child: TextFormField(
-                                        controller: _controller,
-                                        style: TextStyle(
-                                            decoration: TextDecoration.none),
-                                        decoration: InputDecoration(
-                                          hintText: 'Escreva alguma coisa',
-                                        ),
-                                        validator: (value) => value.isEmpty
-                                            ? 'Deve escrever algo...'
-                                            : null,
-                                        onSaved: (value) =>
-                                            blocPost.content = value,
-                                      ),
-                                    ),
-                                    height: 50,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.send),
-                                    onPressed: () {
-                                      if (formController.validade()) {
-                                        AppModule.to
-                                            .bloc<PostBloc>()
-                                            .streamPost(
-                                              MessageModel(
-                                                  content: blocPost.content),
-                                            );
-                                        _controller.clear();
-                                        blocPost.content = null;
+                      StreamBuilder<int>(
+                          stream: blocPost.saida,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) blocPost.entrada.add(null);
 
-                                        Timer.periodic(Duration(seconds: 0),
-                                            (Timer t) {
-                                            AppModule.to
-                                                .bloc<AppBloc>()
-                                                .requisition();
-                                        });
-                                      }
-                                    },
-                                    color: Colors.purple,
-                                  )
-                                ],
+                            return Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Card(
+                                    elevation: 0.0,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.8,
+                                          child: Form(
+                                            key: formController.formKey,
+                                            child: TextFormField(
+                                              controller: _controller,
+                                              style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none),
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    'Escreva alguma coisa',
+                                              ),
+                                              validator: (value) =>
+                                                  value.isEmpty
+                                                      ? 'Deve escrever algo...'
+                                                      : null,
+                                              onSaved: (value) =>
+                                                  blocPost.content = value,
+                                              onFieldSubmitted: (_) async {
+                                                if (formController.validade()) {
+                                                  _controller.clear();
+
+                                                  blocPost.entrada.add(
+                                                    MessageModel(
+                                                      content: blocPost.content,
+                                                      embed: Embeds(
+                                                        title: 'Embed message',
+                                                        description: 'hdhdhdhd',
+                                                        image: Thumbnail(
+                                                            url:
+                                                                'https://i.pinimg.com/originals/ce/2b/27/ce2b274fa68d234865a6abf69644f472.png'),
+                                                      ),
+                                                    ),
+                                                  );
+
+                                                  blocPost.content = null;
+                                                  blocPost.entrada.add(null);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          height: 50,
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.send),
+                                          onPressed: () async {
+                                            if (formController.validade()) {
+                                              _controller.clear();
+
+                                              blocPost.entrada.add(
+                                                MessageModel(
+                                                  content: blocPost.content,
+                                                  embed: Embeds(
+                                                    image: Thumbnail(
+                                                        url:
+                                                            'https://i.pinimg.com/originals/ce/2b/27/ce2b274fa68d234865a6abf69644f472.png'),
+                                                  ),
+                                                ),
+                                              );
+
+                                              blocPost.content = null;
+                                              blocPost.entrada.add(null);
+                                            }
+                                          },
+                                          color: Colors.purple,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
+                            );
+                          }),
                     ],
                   )
                 : Center(child: CircularProgressIndicator());
           }),
     );
+  }
+
+  @override
+  void dispose() {
+    blocPost.dispose();
+    super.dispose();
   }
 }
 

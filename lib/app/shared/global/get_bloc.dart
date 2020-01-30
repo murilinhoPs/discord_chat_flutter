@@ -18,6 +18,7 @@ class AppBloc extends BlocBase {
     entrada.add(response);
   }
 
+
   @override
   void dispose() {
     _controller$.close();

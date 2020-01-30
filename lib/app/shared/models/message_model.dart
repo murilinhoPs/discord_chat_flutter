@@ -9,6 +9,7 @@ class MessageModel {
   String channelId;
   Author author;
   List<Attachments> attachments;
+  Embeds embed;
   List<Embeds> embeds;
   List<Mentions> mentions;
 
@@ -18,6 +19,7 @@ class MessageModel {
       this.channelId,
       this.author,
       this.attachments,
+      this.embed,
       this.embeds,
       this.mentions});
 
@@ -25,6 +27,12 @@ class MessageModel {
     id = json['id'];
     content = json['content'];
     channelId = json['channel_id'];
+    if (json['embeds'] != null) {
+      embeds = new List<Embeds>();
+      json['embeds'].forEach((v) {
+        embeds.add(new Embeds.fromJson(v));
+      });
+    }
 // Author
     author =
         json['author'] != null ? new Author.fromJson(json['author']) : null;
@@ -36,12 +44,10 @@ class MessageModel {
       });
     }
 // Embeds
-    if (json['embeds'] != null) {
-      embeds = new List<Embeds>();
-      json['embeds'].forEach((v) {
-        embeds.add(new Embeds.fromJson(v));
-      });
-    }
+
+    embed =
+        json['embed'] != null ? new Embeds.fromJson(json['embed']) : null;
+
 // Mentions
     if (json['mentions'] != null) {
       mentions = new List<Mentions>();
@@ -62,8 +68,8 @@ class MessageModel {
     if (this.attachments != null) {
       data['attachments'] = this.attachments.map((v) => v.toJson()).toList();
     }
-    if (this.embeds != null) {
-      data['embeds'] = this.embeds.map((v) => v.toJson()).toList();
+    if (this.embed != null) {
+      data['embed'] = this.embed.toJson();
     }
     if (this.mentions != null) {
       data['mentions'] = this.mentions.map((v) => v.toJson()).toList();
