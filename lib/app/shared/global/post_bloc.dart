@@ -3,6 +3,9 @@ import 'package:discord_api_chat/app/shared/models/message_model.dart';
 import 'package:discord_api_chat/app/shared/services/dio_response.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../app_module.dart';
+import 'get_bloc.dart';
+
 class PostBloc extends BlocBase {
   final _service = DiscordService();
 
@@ -18,6 +21,8 @@ class PostBloc extends BlocBase {
     if (data != null)
       try {
         final response = await _service.responsePost(data.toJson());
+
+        AppModule.to.bloc<AppBloc>().requisition();
 
         print('$response  ${data.toJson()}');
         yield response;
