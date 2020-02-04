@@ -46,14 +46,14 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: StreamBuilder<List<MessageModel>>(
-            stream: AppModule.to.bloc<AppBloc>().saida,
-            builder: (context, snapshot) {
-              return snapshot.hasData
-                  ? Stack(
-                      fit: StackFit.passthrough,
-                      children: <Widget>[
-                        Padding(
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: <Widget>[
+            StreamBuilder<List<MessageModel>>(
+                stream: AppModule.to.bloc<AppBloc>().saida,
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? Padding(
                           padding: EdgeInsets.only(
                               bottom:
                                   MediaQuery.of(context).size.height * 0.085),
@@ -69,22 +69,24 @@ class _MyHomePageState extends State<MyHomePage> {
                               );
                             },
                           ),
-                        ),
-                        StreamBuilder<int>(
-                          stream: blocPost.saida,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) blocPost.entrada.add(null);
-
-                            return TextForms(
-                              formController: formController,
-                              blocPost: blocPost,
-                            );
-                          },
-                        ),
-                      ],
-                    )
-                  : Center(child: CircularProgressIndicator());
-            }),
+                        )
+                      : Center(child: CircularProgressIndicator());
+                }),
+            StreamBuilder<int>(
+              stream: blocPost.saida,
+              builder: (context, snapshot) {
+                if (snapshot.hasData)
+                  blocPost.entrada.add(null);
+                else {
+                  return TextForms(
+                    formController: formController,
+                    blocPost: blocPost,
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
