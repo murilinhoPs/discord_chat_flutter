@@ -41,11 +41,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 3.0,
         title: Text('Discord-Api-Chat'),
         centerTitle: true,
       ),
       body: SafeArea(
+        bottom: false,
         child: Stack(
           fit: StackFit.passthrough,
           children: <Widget>[
@@ -65,24 +69,39 @@ class _MyHomePageState extends State<MyHomePage> {
                               MessageModel item = snapshot.data[index];
 
                               return MessageTile(
-                                item: item,
+                                message: item,
                               );
                             },
                           ),
                         )
                       : Center(child: CircularProgressIndicator());
                 }),
+            Align(
+              alignment: Alignment.bottomCenter,
+              // bottom: 0,
+              // top: MediaQuery.of(context).size.height * 0.783,
+              // left: 0,
+              // right: 0,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        spreadRadius: 1.0,
+                        color: Colors.black12,
+                        blurRadius: 3.0),
+                  ],
+                ),
+              ),
+            ),
             StreamBuilder<int>(
               stream: blocPost.saida,
               builder: (context, snapshot) {
-                if (snapshot.hasData)
-                  blocPost.entrada.add(null);
-                else {
-                  return TextForms(
-                    formController: formController,
-                    blocPost: blocPost,
-                  );
-                }
+                return TextForms(
+                  formController: formController,
+                  blocPost: blocPost,
+                );
               },
             ),
           ],
